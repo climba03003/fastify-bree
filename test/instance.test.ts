@@ -41,4 +41,22 @@ describe('instance bree', function () {
       path: 'console.ts'
     })
   })
+
+  test('fastify.bree.register - with worker option', function () {
+    fastify.bree.register({
+      name: 'console worker option',
+      path: 'console.ts',
+      worker: {}
+    })
+  })
+
+  test('fastify.bree.register - with worker data option', function () {
+    fastify.bree.register({
+      name: 'console workerData option',
+      path: 'console.ts',
+      worker: {
+        workerData: {}
+      }
+    })
+  })
 })

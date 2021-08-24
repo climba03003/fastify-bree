@@ -3,11 +3,22 @@ import * as path from 'path'
 import FastifyBree from '../lib'
 
 describe('register bree', function () {
-  test('successful registered', async function () {
+  test('without options', async function () {
+    const fastify = Fastify()
+    await fastify.register(FastifyBree)
+  })
+
+  test('customOptions', async function () {
     const fastify = Fastify()
     await fastify.register(FastifyBree, {
-      customOptions: { root: path.join(__dirname, 'jobs') },
-      autoStart: true
+      customOptions: { root: path.join(__dirname, 'jobs') }
+    })
+  })
+
+  test('custom logger', async function () {
+    const fastify = Fastify()
+    await fastify.register(FastifyBree, {
+      customOptions: { logger: console }
     })
   })
 })

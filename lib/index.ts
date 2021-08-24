@@ -26,6 +26,7 @@ declare module 'fastify' {
   }
 }
 
+// For future customization
 export interface CustomBree extends BreeClass {
   register: (jobOptions: JobOptions & { ts?: boolean }) => void
 }
@@ -56,8 +57,6 @@ const plugin: FastifyPluginAsync<FastifyBreeOptions> = async function (fastify, 
   }
   const o = { ...defaultOption, ...customOptions }
   // we suppress all initialization error message by using fake logger
-  // the main reason is when the root dir is empty it will throw a false positive
-  // error
   o.logger = fakeLogger
 
   const bree: CustomBree = new Bree(o) as CustomBree
@@ -115,8 +114,8 @@ export const FastifyBree = FastifyPlugin(plugin, {
 })
 export default FastifyBree
 
-// export typescript worker
-// TODO: better integration for typescript worker
+// export typescript worker - no need to test
+/* istanbul ignore next */
 export function TypeScriptWorker (): void {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const path = require('path')
