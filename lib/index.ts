@@ -26,14 +26,19 @@ declare module 'fastify' {
   }
 }
 
+// For future customization
 export interface CustomBree extends BreeClass {
   register: (jobOptions: JobOptions & { ts?: boolean }) => void
 }
 
 function noop (): void {}
 const fakeLogger = {
+  trace: noop,
+  debug: noop,
   info: noop,
-  error: noop
+  warn: noop,
+  error: noop,
+  log: noop
 }
 
 const plugin: FastifyPluginAsync<FastifyBreeOptions> = async function (fastify, options) {
@@ -45,18 +50,22 @@ const plugin: FastifyPluginAsync<FastifyBreeOptions> = async function (fastify, 
     await fs.promises.mkdir(customOptions.root, { recursive: true })
   }
 
-  const childLogger = fastify.log.child({ name: 'bree' })
   // default options
   const defaultOption: BreeOptions = {
     root: false,
-    jobs: [],
-    logger: fakeLogger
+    jobs: []
   }
   const o = { ...defaultOption, ...customOptions }
+  // we suppress all initialization error message by using fake logger
+  o.logger = fakeLogger
 
   const bree: CustomBree = new Bree(o) as CustomBree
-  // change to real logger after initialize `Bree`
-  bree.config.logger = childLogger
+  // update to use real logger after initialization
+  if (typeof customOptions.logger === 'object') {
+    bree.config.logger = customOptions.logger
+  } else {
+    bree.config.logger = fastify.log.child({ plugin: 'fastify-bree' })
+  }
 
   bree.register = function (jobOptions) {
     let opt = {}
@@ -105,7 +114,8 @@ export const FastifyBree = FastifyPlugin(plugin, {
 })
 export default FastifyBree
 
-// export typescript worker
+// export typescript worker - no need to test
+/* istanbul ignore next */
 export function TypeScriptWorker (): void {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const path = require('path')
