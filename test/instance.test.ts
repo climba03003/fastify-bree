@@ -59,4 +59,15 @@ describe('instance bree', function () {
       }
     })
   })
+
+  test('fastify.bree.register - transpileOnly', function () {
+    fastify.bree.register({
+      name: 'console worker transpileOnly',
+      path: 'console.ts',
+      tsNodeOptions: {
+        transpileOnly: true
+      },
+      worker: {}
+    })
+  })
 })
