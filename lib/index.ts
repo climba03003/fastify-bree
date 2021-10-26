@@ -11,8 +11,12 @@ function isTSNode (options: { ts?: boolean }): boolean {
   return options.ts ?? !!(process as any)[Symbol.for('ts-node.register.instance')]
 }
 
+export interface TSNodeOptions {
+  transpileOnly?: boolean
+}
+
 export type BreeOptions = NonNullable<ConstructorParameters<typeof BreeClass>[0]>
-export type JobOptions = Exclude<Parameters<BreeClass['add']>[0], string | any[] | Function>
+export type JobOptions = Exclude<Parameters<BreeClass['add']>[0], string | any[] | Function> & { ts?: boolean, tsNodeOptions?: TSNodeOptions }
 
 export interface FastifyBreeOptions {
   customOptions?: BreeOptions
@@ -28,7 +32,7 @@ declare module 'fastify' {
 
 // For future customization
 export interface CustomBree extends BreeClass {
-  register: (jobOptions: JobOptions & { ts?: boolean }) => void
+  register: (jobOptions: JobOptions) => void
 }
 
 function noop (): void {}
@@ -104,6 +108,7 @@ function normailizeTypeScriptWorkerOption (opt: JobOptions & { worker?: { worker
     }
   }
   jobOptions.worker.workerData.__filename = filename
+  jobOptions.worker.workerData.__tsNodeOptions = opt.tsNodeOptions ?? {}
   return jobOptions
 }
 
@@ -120,8 +125,8 @@ export function TypeScriptWorker (): void {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const path = require('path')
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  require('ts-node').register()
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const workerData = require('worker_threads').workerData
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require('ts-node').register(workerData.__tsNodeOptions)
   require(path.resolve(__dirname, workerData.__filename))
 }
