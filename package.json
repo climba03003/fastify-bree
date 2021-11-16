@@ -34,7 +34,7 @@
   "author": "KaKa",
   "license": "GPL-3.0",
   "dependencies": {
-    "@types/bree": "^6.2.1",
+    "@types/bree": "^7.1.0",
     "bree": "^7.0.0",
     "fastify-plugin": "^3.0.0"
   },
