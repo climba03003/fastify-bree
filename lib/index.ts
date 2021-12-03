@@ -1,4 +1,4 @@
-import BreeClass from 'bree'
+import BreeClass, { BreeOptions, JobOptions } from 'bree'
 import { FastifyPluginAsync } from 'fastify'
 import FastifyPlugin from 'fastify-plugin'
 import * as fs from 'fs'
@@ -14,9 +14,6 @@ function isTSNode (options?: { ts?: boolean }): boolean {
 export interface TSNodeOptions {
   transpileOnly?: boolean
 }
-
-export type BreeOptions = NonNullable<ConstructorParameters<typeof BreeClass>[0]>
-export type JobOptions = Parameters<BreeClass['add']>[0]
 
 export interface FastifyBreeOptions {
   customOptions?: BreeOptions

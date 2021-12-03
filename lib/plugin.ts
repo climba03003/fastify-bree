@@ -1,6 +1,7 @@
+import { BreeOptions } from 'bree'
 import { Worker } from 'worker_threads'
 
-export function BreeTS (options: any, Bree: any): void {
+export function BreeTS (options: BreeOptions, Bree: any): void {
   options = options ?? {}
 
   const oldInit = Bree.prototype.init
