@@ -31,10 +31,9 @@ export function BreeTS (options: any, Bree: any): void {
       options.workerData.__tsNodeOptions = options.tsNodeOptions
 
       return new Worker(`
-        const path = require('path')
-        const workerData = require('worker_threads).workerData
-        require('ts-node').register(workerData.__tsNodeOptions)
-        require(path.resolve(__dirname, workerData.__filename))
+const workerData = require('worker_threads').workerData
+require('ts-node').register(workerData.__tsNodeOptions)
+require(workerData.__filename)
       `, options)
     }
 
