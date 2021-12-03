@@ -1,4 +1,4 @@
-import { Worker } from 'node:worker_threads'
+import { Worker } from 'worker_threads'
 
 export function BreeTS (options: any, Bree: any): void {
   options = options ?? {}
