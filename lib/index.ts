@@ -16,7 +16,7 @@ export interface TSNodeOptions {
 }
 
 export type BreeOptions = NonNullable<ConstructorParameters<typeof BreeClass>[0]>
-export type JobOptions = Exclude<Parameters<BreeClass['add']>[0], string | any[] | Function> & { ts?: boolean, tsNodeOptions?: TSNodeOptions }
+export type JobOptions = Parameters<BreeClass['add']>[0]
 
 export interface FastifyBreeOptions {
   customOptions?: BreeOptions
@@ -27,6 +27,12 @@ export interface FastifyBreeOptions {
 declare module 'fastify' {
   interface FastifyInstance {
     bree: CustomBree
+  }
+}
+
+declare module 'bree' {
+  interface JobOptions {
+    tsNodeOptions?: TSNodeOptions
   }
 }
 
