@@ -18,7 +18,7 @@ describe('register bree', function () {
   test('custom logger', async function () {
     const fastify = Fastify()
     await fastify.register(FastifyBree, {
-      customOptions: { logger: console }
+      customOptions: { logger: console as any }
     })
   })
 })

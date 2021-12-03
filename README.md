@@ -80,7 +80,10 @@ fastify.register(Fastifybree, {
 
 ### Methods
 
-#### register
+#### register (Deprecated)
+
+> In favour of `bree` plugin, we can customize the `createWorker` function directly and provide better support for `TypeScrip`. So this function
+> is deprecated and we can use the unify `add` function for the your job.
 
 It is a method to reduce burden between JavaSciprt and TypeScript experience. Internally, it will detect if your environment is run under `ts-node` and modify your options.
 
