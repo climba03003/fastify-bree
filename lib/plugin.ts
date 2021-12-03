@@ -28,7 +28,7 @@ export function BreeTS (options: any, Bree: any): void {
     if (filename.endsWith('.ts')) {
       options.eval = true
       options.workerData.__filename = filename
-      options.workerData.__tsNodeOptions = options.job.tsNodeOptions
+      options.workerData.__tsNodeOptions = options.workerData.job.tsNodeOptions
 
       return new Worker(`
 const workerData = require('worker_threads').workerData
