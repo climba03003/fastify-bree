@@ -99,7 +99,7 @@ const plugin: FastifyPluginAsync<FastifyBreeOptions> = async function (fastify, 
 }
 
 export const FastifyBree = FastifyPlugin(plugin, {
-  fastify: '3.x',
+  fastify: '4.x',
   name: 'fastify-bree',
   dependencies: []
 })
