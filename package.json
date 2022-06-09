@@ -14,14 +14,18 @@
     "lib": "lib"
   },
   "scripts": {
+    "clean": "npx rimraf \"lib/**/*.js\" \"lib/**/*.map\" \"lib/**/*.d.ts\" \"test/**/*.js\" \"test/**/*.map\" \"test/**/*.d.ts\"",
     "lint": "eslint --ext .ts lib test",
     "lint:fix": "npm run lint -- --fix",
-    "build": "rollup -c",
-    "build:tsc": "tsc -b",
+    "prebuild": "npm run clean",
+    "build": "npm run build:mjs && npm run build:cjs",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:mjs": "tsc -p tsconfig.mjs.json",
     "unit": "jest",
     "test": "npm run lint && npm run unit",
     "coverage": "jest --coverage",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "postpublish": "npm run clean"
   },
   "publishConfig": {
     "access": "public",
@@ -38,20 +42,19 @@
     "fastify-plugin": "^3.0.0"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^8.2.1",
+    "@types/node": "^17.0.40",
     "@types/jest": "^27.0.1",
-    "@typescript-eslint/eslint-plugin": "4",
-    "eslint": "7",
+    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "@typescript-eslint/parser": "^4.0.0",
+    "eslint": "^7.12.1",
     "eslint-config-standard-with-typescript": "^21.0.1",
-    "eslint-plugin-import": "2",
-    "eslint-plugin-node": "11",
-    "eslint-plugin-promise": "5",
-    "eslint-plugin-standard": "5",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.0.0",
     "fastify": "^3.19.0",
     "husky": "^7.0.1",
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
-    "rollup": "^2.53.1",
     "ts-jest": "^27.0.3",
     "typescript": "^4.3.5"
   },
