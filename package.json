@@ -42,7 +42,7 @@
     "fastify-plugin": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^17.0.40",
+    "@types/node": "^18.0.0",
     "@types/jest": "^27.0.1",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.0",
