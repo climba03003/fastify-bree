@@ -39,7 +39,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "bree": "^7.0.0",
-    "fastify-plugin": "^3.0.0"
+    "fastify-plugin": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
