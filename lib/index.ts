@@ -37,12 +37,6 @@ declare module 'bree' {
 export interface CustomBree extends BreeClass {
 }
 
-function noop (): void {}
-const FakeLogger = Object.create(null)
-for (const name of ['trace', 'debug', 'info', 'warn', 'error', 'log']) {
-  FakeLogger[name] = noop
-}
-
 const plugin: FastifyPluginAsync<FastifyBreeOptions> = async function (fastify, options) {
   // default auto start to true
   const opt: Required<FastifyBreeOptions> = Object.assign({ customOptions: {}, autoStart: true, autoClose: true }, options)
@@ -55,20 +49,17 @@ const plugin: FastifyPluginAsync<FastifyBreeOptions> = async function (fastify, 
   // default options
   const defaultOption: BreeOptions = {
     root: false,
+    // we suppress all initial error
+    silenceRootCheckError: true,
     jobs: []
   }
   const o = { ...defaultOption, ...customOptions }
-  // we suppress all initialization error message by using fake logger
-  o.logger = FakeLogger
+  if (typeof o.logger !== 'object') {
+    o.logger = fastify.log.child({ plugin: 'fastify-bree' }) as any
+  }
 
   if (isTSNode()) Bree.extend(BreeTS)
   const bree: CustomBree = new Bree(o) as CustomBree
-  // update to use real logger after initialization
-  if (typeof customOptions.logger === 'object') {
-    bree.config.logger = customOptions.logger
-  } else {
-    bree.config.logger = fastify.log.child({ plugin: 'fastify-bree' }) as any
-  }
 
   fastify.decorate('bree', bree)
 
