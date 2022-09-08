@@ -4,7 +4,6 @@
 [![Package Manager CI](https://github.com/climba03003/fastify-bree/actions/workflows/package-manager-ci.yml/badge.svg)](https://github.com/climba03003/fastify-bree/actions/workflows/package-manager-ci.yml)
 [![NPM version](https://img.shields.io/npm/v/fastify-bree.svg?style=flat)](https://www.npmjs.com/package/fastify-bree)
 [![GitHub package.json version](https://img.shields.io/github/package-json/v/climba03003/fastify-bree)](https://github.com/climba03003/fastify-bree)
-[![Coverage Status](https://coveralls.io/repos/github/climba03003/fastify-bree/badge.svg?branch=main)](https://coveralls.io/github/climba03003/fastify-bree?branch=master)
 [![GitHub](https://img.shields.io/github/license/climba03003/fastify-bree)](https://github.com/climba03003/fastify-bree)
 
 This plugin integrate [`bree`](https://github.com/breejs/bree) with `fastify` to support scheduling jobs.
@@ -30,7 +29,7 @@ fastify.register(Fastifybree, {
   }
 })
 
-fastify.bree.register({
+await fastify.bree.add({
   name: 'cron' // which will use the file - `process.cwd()/jobs/cron.ts`
 })
 
@@ -75,36 +74,5 @@ import Fastifybree from 'fastify-bree'
 
 fastify.register(Fastifybree, {
   autoClose: true
-})
-```
-
-### Methods
-
-#### register (Deprecated)
-
-> In favour of `bree` plugin, we can customize the `createWorker` function directly and provide better support for `TypeScrip`. So this function
-> is deprecated and we can use the unify `add` function for the your job.
-
-It is a method to reduce burden between JavaSciprt and TypeScript experience. Internally, it will detect if your environment is run under `ts-node` and modify your options.
-
-```ts
-// Register with name only
-fastify.bree.register({
-  name: 'cron' // which will use the file - `process.cwd()/jobs/cron.ts`
-})
-
-
-// Register with path
-fastify.bree.register({
-  name: 'cron',
-  path: 'cron.ts'
-})
-
-// Register with function
-fastify.bree.register({
-  name: 'cron',
-  path: function() {
-
-  }
 })
 ```
