@@ -5,7 +5,7 @@
     "**/*.js": { "when": "$(basename).ts" },
     "node_modules": true
   },
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "todo-tree.tree.showCountsInTree": true,
   "typescript.updateImportsOnFileMove.enabled": "always",
   "[typescript]": {

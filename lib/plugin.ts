@@ -1,15 +1,17 @@
-import { BreeOptions } from 'bree'
+import { PluginFunc } from 'bree'
 import { Worker } from 'worker_threads'
 
-export function BreeTS (options: BreeOptions, Bree: any): void {
+export const BreeTS: PluginFunc = function (options, Bree): void {
   options = options ?? {}
 
+  // @ts-expect-error
   const oldInit = Bree.prototype.init
 
   // we update init script, so the options is match for TypeScript
-  Bree.prototype.init = function () {
+  // @ts-expect-error
+  Bree.prototype.init = async function () {
     // add `.ts` extension to supported list
-    if (this.config.acceptedExtensions.includes('.ts') === false) {
+    if (!this.config.acceptedExtensions.includes('.ts')) {
       this.config.acceptedExtensions.push('.ts')
     }
 
@@ -18,7 +20,7 @@ export function BreeTS (options: BreeOptions, Bree: any): void {
       this.config.defaultExtension = 'ts'
     }
 
-    oldInit.bind(this)()
+    return oldInit.bind(this)()
   }
 
   const oldCreateWorker = Bree.prototype.createWorker

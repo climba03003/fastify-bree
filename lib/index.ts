@@ -1,4 +1,4 @@
-import BreeClass, { BreeOptions, JobOptions } from 'bree'
+import BreeClass, { BreeOptions } from 'bree'
 import { FastifyPluginAsync } from 'fastify'
 import FastifyPlugin from 'fastify-plugin'
 import * as fs from 'fs'
@@ -28,27 +28,20 @@ declare module 'fastify' {
 }
 
 declare module 'bree' {
-  interface JobOptions {
+  interface Job {
     tsNodeOptions?: TSNodeOptions
   }
 }
 
 // For future customization
 export interface CustomBree extends BreeClass {
-  register: (jobOptions: JobOptions) => void
 }
 
 function noop (): void {}
-const fakeLogger = {
-  trace: noop,
-  debug: noop,
-  info: noop,
-  warn: noop,
-  error: noop,
-  log: noop
+const FakeLogger = Object.create(null)
+for (const name of ['trace', 'debug', 'info', 'warn', 'error', 'log']) {
+  FakeLogger[name] = noop
 }
-
-let warningEmitted = false
 
 const plugin: FastifyPluginAsync<FastifyBreeOptions> = async function (fastify, options) {
   // default auto start to true
@@ -66,7 +59,7 @@ const plugin: FastifyPluginAsync<FastifyBreeOptions> = async function (fastify, 
   }
   const o = { ...defaultOption, ...customOptions }
   // we suppress all initialization error message by using fake logger
-  o.logger = fakeLogger
+  o.logger = FakeLogger
 
   if (isTSNode()) Bree.extend(BreeTS)
   const bree: CustomBree = new Bree(o) as CustomBree
@@ -77,20 +70,10 @@ const plugin: FastifyPluginAsync<FastifyBreeOptions> = async function (fastify, 
     bree.config.logger = fastify.log.child({ plugin: 'fastify-bree' }) as any
   }
 
-  bree.register = function (jobOptions) {
-    if (!warningEmitted) {
-      process.emitWarning('Bree.register is deprecated, you should use Bree.add directly', {
-        code: 'FST_BREE_DEP_01'
-      })
-      warningEmitted = true
-    }
-    bree.add(jobOptions)
-  }
-
   fastify.decorate('bree', bree)
 
   if (autoStart) {
-    fastify.addHook('onReady', function () { bree.start() })
+    fastify.addHook('onReady', async function () { await bree.start() })
   }
 
   if (autoClose) {
