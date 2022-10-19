@@ -3,8 +3,6 @@ import { FastifyPluginAsync } from 'fastify'
 import FastifyPlugin from 'fastify-plugin'
 import * as fs from 'fs'
 import { BreeTS } from './plugin'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Bree = require('bree')
 
 function isTSNode (options?: { ts?: boolean }): boolean {
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
@@ -58,8 +56,8 @@ const plugin: FastifyPluginAsync<FastifyBreeOptions> = async function (fastify, 
     o.logger = fastify.log.child({ plugin: 'fastify-bree' }) as any
   }
 
-  if (isTSNode()) Bree.extend(BreeTS)
-  const bree: CustomBree = new Bree(o) as CustomBree
+  if (isTSNode()) BreeClass.extend(BreeTS)
+  const bree: CustomBree = new BreeClass(o) as CustomBree
 
   fastify.decorate('bree', bree)
 
