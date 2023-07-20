@@ -1,5 +1,5 @@
-import BreeClass, { BreeOptions } from 'bree'
-import { FastifyPluginAsync } from 'fastify'
+import BreeClass, { type BreeOptions } from 'bree'
+import { type FastifyPluginAsync } from 'fastify'
 import FastifyPlugin from 'fastify-plugin'
 import * as fs from 'fs'
 import { BreeTS } from './plugin'
