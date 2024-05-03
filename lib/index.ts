@@ -1,4 +1,4 @@
-import BreeClass, { type BreeOptions } from 'bree'
+import BreeClass, { type BreeOptions, type JobOptions } from 'bree'
 import { type FastifyPluginAsync } from 'fastify'
 import FastifyPlugin from 'fastify-plugin'
 import * as fs from 'fs'
@@ -9,12 +9,24 @@ function isTSNode (options?: { ts?: boolean }): boolean {
   return options?.ts ?? !!(process as any)[Symbol.for('ts-node.register.instance')]
 }
 
+// I'm beat by breejs/bree types again
+// We probably need to duplicate the types instead of extend
+type AsyncFunction<A extends any[], O> = (...args: A) => Promise<O>
+
+interface CustomJobOptions extends JobOptions {
+  tsNodeOptions?: TSNodeOptions
+}
+
+interface CustomBreeOptions extends Omit<BreeOptions, 'jobs'> {
+  jobs?: Array<string | (() => void) | CustomJobOptions>
+}
+
 export interface TSNodeOptions {
   transpileOnly?: boolean
 }
 
 export interface FastifyBreeOptions {
-  customOptions?: BreeOptions
+  customOptions?: CustomBreeOptions
   autoStart?: boolean
   autoClose?: boolean
 }
@@ -25,14 +37,18 @@ declare module 'fastify' {
   }
 }
 
-declare module 'bree' {
-  interface Job {
-    tsNodeOptions?: TSNodeOptions
-  }
-}
-
 // For future customization
-export interface CustomBree extends BreeClass {
+export interface CustomBree extends Omit<BreeClass, 'add'> {
+  add: AsyncFunction<
+  [
+      jobs:
+        | string
+        | (() => void)
+        | CustomJobOptions
+        | Array<string | (() => void) | CustomJobOptions>
+  ],
+  void
+  >
 }
 
 const plugin: FastifyPluginAsync<FastifyBreeOptions> = async function (fastify, options) {
